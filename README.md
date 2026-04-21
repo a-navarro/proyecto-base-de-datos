@@ -14,12 +14,10 @@
 
 	Describe aquí la solución al problema
 ### 2.1 Modelo Entidad Relación
-
-	Inserta aquí el diagrama del modelo E/R "diagrama.svg" 
-<!-- Usa el formato svg para evitar la perdida de calidad.>
+![Esquema BD](DCColo.drawio.svg)
 
 ### 2.2 Modelo Entidad Relación normalizado
-![Esquema BD](tu_diagrama.svg)
+![Esquema BD](DCColo.drawio.svg)
 
 ### 2.3 Consultas SQL
 
