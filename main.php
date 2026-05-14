@@ -163,12 +163,12 @@ function filaVacia(array $datos): bool
 
 function limpiarTextoSimple(string $texto): string
 {
+    $texto = normalizarCodificacion($texto);
     $texto = trim($texto);
-
-    // tildes y diacriticos
+    $texto = preg_replace('/\s+/', ' ', $texto);
     $texto = str_replace(
         [
-            'ñ', 'Ñ', '�',
+            'ñ', 'Ñ', '–',
             'á', 'Á', 'Ã¡',
             'é', 'É', 'Ã©',
             'í', 'Í', 'Ã­',
@@ -187,10 +187,60 @@ function limpiarTextoSimple(string $texto): string
         ],
         $texto
     );
-
-    $texto = preg_replace('/\s+/', ' ', $texto);
-    return trim($texto);
+    return $texto ?? '';
 }
+
+function normalizarCodificacion(string $texto): string
+{
+    $texto = str_replace("\xEF\xBB\xBF", '', $texto);
+
+    if ($texto === '') {
+        return '';
+    }
+
+    if (preg_match('//u', $texto) !== 1) {
+        $convertido = iconv('Windows-1252', 'UTF-8//IGNORE', $texto);
+
+        if ($convertido !== false) {
+            $texto = $convertido;
+        }
+    }
+
+    return $texto;
+}
+
+// function limpiarTextoSimple(string $texto): string
+// {
+
+
+//     $texto = trim($texto);
+
+//     // tildes y diacriticos
+//     $texto = str_replace(
+//         [
+//             'ñ', 'Ñ', '�',
+//             'á', 'Á', 'Ã¡',
+//             'é', 'É', 'Ã©',
+//             'í', 'Í', 'Ã­',
+//             'ó', 'Ó', 'Ã³',
+//             'ú', 'Ú', 'Ãº',
+//             "'", "’"
+//         ],
+//         [
+//             'n', 'N', 'n',
+//             'a', 'A', 'a',
+//             'e', 'E', 'e',
+//             'i', 'I', 'i',
+//             'o', 'O', 'o',
+//             'u', 'U', 'u',
+//             ' ', ' '
+//         ],
+//         $texto
+//     );
+
+//     $texto = preg_replace('/\s+/', ' ', $texto);
+//     return trim($texto);
+// }
 
 function campoExiste(array $fila, array $opciones): ?string
 {
@@ -435,6 +485,62 @@ function limpiarCampoFecha(
     cambiarValor($fila, $campo, $fecha, $logs, 'correccion', 'Fecha normalizada a YYYY-MM-DD');
 }
 
+function limpiarCampoFechaNacimiento(
+    array &$fila,
+    array $opcionesCampo,
+    array &$logs,
+    bool &$descartar
+): void {
+    $campo = campoExiste($fila, $opcionesCampo);
+    if ($campo === null) {
+        return;
+    }
+
+    $original = (string) $fila[$campo];
+
+    if ($original === '') {
+        return;
+    }
+
+    $fecha = convertirFecha($original);
+
+    if ($fecha === null) {
+        cambiarValor(
+            $fila,
+            $campo,
+            '',
+            $logs,
+            'asignacion',
+            'Fecha de nacimiento inválida'
+        );
+        return;
+    }
+
+    $fechaNacimiento = DateTime::createFromFormat('Y-m-d', $fecha);
+    $hoy = new DateTime();
+
+    if ($fechaNacimiento === false || $fechaNacimiento > $hoy) {
+        cambiarValor(
+            $fila,
+            $campo,
+            '',
+            $logs,
+            'asignacion',
+            'Fecha de nacimiento futura imposible'
+        );
+        return;
+    }
+
+    cambiarValor(
+        $fila,
+        $campo,
+        $fecha,
+        $logs,
+        'correccion',
+        'Fecha de nacimiento normalizada a YYYY-MM-DD'
+    );
+}
+
 function convertirFecha(string $valor): ?string
 {
     $valor = trim($valor);
@@ -447,7 +553,7 @@ function convertirFecha(string $valor): ?string
     if (preg_match('/^(\d{1,2})-(\d{1,2})-(\d{2}|\d{4})$/', $valor, $m) === 1) {
         $anio = (int) $m[3];
         if ($anio < 100) {
-            $anio += ($anio <= 50) ? 2000 : 1900;
+            $anio += ($anio < 50) ? 2000 : 1900;
         }
         return validarFecha($anio, (int) $m[2], (int) $m[1]);
     }
@@ -841,7 +947,7 @@ function limpiarPersonas(array &$fila, array &$logs, bool &$descartar): void
     limpiarCampoEnum($fila, ['tipo_persona', 'tipo persona'], ['socio titular', 'beneficiario', 'adicional', 'invitado', 'administrativo'], [], true, $logs, $descartar);
     limpiarCampoRun($fila, ['run_socio_titular', 'run socio titular'], false, $logs, $descartar);
     limpiarCampoEnum($fila, ['parentesco'], ['conyuge', 'hijo/a', 'hijo', 'hija'], ['cónyuge' => 'conyuge'], false, $logs, $descartar);
-    limpiarCampoFecha($fila, ['fecha_nacimiento', 'fecha nacimiento'], false, $logs, $descartar);
+    limpiarCampoFechaNacimiento($fila, ['fecha_nacimiento', 'fecha nacimiento'], $logs, $descartar);
     limpiarCampoFecha($fila, ['fecha_inicio_membresia', 'fecha inicio membresia'], false, $logs, $descartar);
     limpiarCampoFecha($fila, ['fecha_fin_membresia', 'fecha fin membresia'], false, $logs, $descartar);
     limpiarCampoSiNo($fila, ['es_usuario_sistema', 'es usuario sistema'], true, $logs, $descartar);

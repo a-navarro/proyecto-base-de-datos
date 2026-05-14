@@ -1,20 +1,21 @@
-# Informe Entrega X - Bases de datos IIC2413
+# Informe Entrega 2 - Bases de datos IIC2413
 
 ## Datos del Alumno
 | **Apellidos**       | **Nombres**          | **Número de Alumno** |
 |---------------------|----------------------|----------------------|
-| Apellido1 Apellido2 | Nombre 1 Nombre 2    |12345678              |
+| Navarro Aragón 	  | Antonio				 |25663259              |
 
 
 ## 1. Descripción y análisis del problema
  
-	Describe aquí el planteamiento del problema y el análisis de la solución global
+	En esta etapa del proyecto nos enfrentamos a un 
 
 ## 2. Solución aplicada
 
 	Describe aquí la solución al problema
 ### 2.1 Limpieza de datos con PHP
 
+	Dentro de los casos encontrados, se encontraron (como era de esperar) muchas instancias de tildes y diactríticos propios del idioma español. Estos caracteres, al no estar incluidos en la codificación ASCII por defecto, la gran mayoría de las veces produce datos alterados al no ser procesados correctamente.
 	Incluir el detalle de los casos encontrados y la solución aplicada
 	Registros reparados
 	Registros anulados
