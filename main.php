@@ -925,6 +925,53 @@ function limpiarCampoSiNo(
     cambiarValor($fila, $campo, $nuevo, $logs, 'correccion', 'Campo SI/NO normalizado');
 }
 
+function limpiarCodigoReserva(
+    array &$fila,
+    array $opcionesCampo,
+    array &$logs
+): void {
+    static $contador = 1;
+    static $codigosUsados = [];
+
+    $campo = campoExiste($fila, $opcionesCampo);
+    if ($campo === null) {
+        return;
+    }
+
+    $original = (string) $fila[$campo];
+    $codigo = strtoupper(trim($original));
+    $codigo = preg_replace('/[^A-Z0-9_-]/', '', $codigo) ?? '';
+
+    if ($codigo !== '' && !isset($codigosUsados[$codigo])) {
+        $codigosUsados[$codigo] = true;
+        cambiarValor(
+            $fila,
+            $campo,
+            $codigo,
+            $logs,
+            'correccion',
+            'Código de reserva normalizado'
+        );
+        return;
+    }
+
+    do {
+        $nuevo = sprintf('RES-AUTO-%06d', $contador);
+        $contador++;
+    } while (isset($codigosUsados[$nuevo]));
+
+    $codigosUsados[$nuevo] = true;
+
+    cambiarValor(
+        $fila,
+        $campo,
+        $nuevo,
+        $logs,
+        'asignacion',
+        'Código de reserva faltante o duplicado; se asigna identificador artificial para conservar la tupla'
+    );
+}
+
 function limpiarRegionesComunas(array &$fila, array &$logs, bool &$descartar): void
 {
     limpiarCampoEntero($fila, ['Código Comuna', 'codigo_comuna', 'codigo comuna'], true, $logs, $descartar, 0, true);
@@ -976,7 +1023,11 @@ function limpiarSucursalesLugares(array &$fila, array &$logs, bool &$descartar):
 
 function limpiarReservasArriendos(array &$fila, array &$logs, bool &$descartar): void
 {
-    limpiarCampoTexto($fila, ['codigo_reserva', 'codigo reserva'], true, $logs, $descartar, true);
+    limpiarCodigoReserva(
+        $fila,
+        ['codigo_reserva', 'codigo reserva', 'codigo_arriendo', 'codigo arriendo'],
+        $logs
+    );
     limpiarCampoFecha($fila, ['fecha_reserva', 'fecha reserva'], true, $logs, $descartar);
     limpiarCampoFechaHora($fila, ['fecha_inicio', 'fecha inicio'], true, $logs, $descartar);
     limpiarCampoFechaHora($fila, ['fecha_fin', 'fecha fin'], true, $logs, $descartar);

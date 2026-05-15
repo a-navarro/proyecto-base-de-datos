@@ -3,6 +3,23 @@
 \pset null ''
 \o agenda.txt
 
+/*
+
+SELECT
+    evento.fecha_evento,
+    evento.codigo_evento,
+    evento.nombre,
+    evento.fecha_evento,
+    evento.codigo_sucursal,
+    sucursal.nombre
+FROM
+    evento JOIN sucursal
+        ON evento.codigo_sucursal = sucursal.codigo_sucursal
+WHERE evento.codigo_sucursal = sucursal.codigo_sucursal;
+
+
+*/
+
 WITH agenda_base AS (
 
     SELECT
