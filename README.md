@@ -4,9 +4,7 @@
 
 | **Apellidos** | **Nombres** | **Número de Alumno** |
 |---|---|---|
-| Navarro | Antonio | COMPLETAR |
-
-> **Nota antes de entregar:** completar el número de alumno y revisar que el nombre coincida exactamente con el registrado en el curso.
+| Navarro Aragon | Antonio | 25663259 |
 
 ---
 
@@ -521,8 +519,6 @@ Se utilizó asistencia de IA para apoyo en redacción, organización del informe
 
 | Parte | % IA estimado | Tecnología | Prompt utilizado |
 |---|---:|---|---|
-| README.md / informe | 80% | ChatGPT | "Ya tengo todo para entregar el proyecto, y necesito redactar el README.md. De todas maneras, no funciona todo correctamente. Por ejemplo, la letra ñ en la tabla evento, no se procesó bien. O en reserva no hay datos. Necesito que revises eso, o al menos me digas que hacer para testear y darte el estado actual de la base de datos y su funcionamiento, y lo redactes en el README correspondiente." |
-| Diagnóstico de estado de base de datos | 60% | ChatGPT | Se solicitó revisar resultados de `cat *.txt`, interpretar tablas vacías y proponer pruebas SQL para verificar codificación, reservas, errores de carga y resultados de consultas. |
-| Código PHP y SQL | COMPLETAR | ChatGPT / otra herramienta si corresponde | COMPLETAR con los prompts reales usados en `main.php`, `carga.sql` y consultas SQL, si hubo apoyo de IA en esas partes. |
-
-> **Importante:** ajustar los porcentajes y prompts antes de entregar si no reflejan exactamente el uso real de IA en el código y en el informe.
+| README.md / informe | 50% | ChatGPT 5.5 | "Ya tengo todo para entregar el proyecto, y necesito redactar el README.md. De todas maneras, no funciona todo correctamente. Por ejemplo, la letra ñ en la tabla evento, no se procesó bien. O en reserva no hay datos. Necesito que revises eso, o al menos me digas que hacer para testear y darte el estado actual de la base de datos y su funcionamiento, y lo redactes en el README correspondiente." |
+| Diagnóstico de estado de base de datos | 20% | ChatGPT 5.5 | Se solicitó revisar resultados de `cat *.txt`, interpretar tablas vacías y proponer pruebas SQL para verificar codificación, reservas, errores de carga y resultados de consultas. |
+| Código PHP y SQL | 60% | ChatGPT 5.5 | Se creó un proyecto con Codex, ChatGPT y consultas de generación de códigos base y plantillas para trabajar a partir de estas. |
